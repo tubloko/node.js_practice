@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/index.css" type="text/css">
+    <link rel="stylesheet" href="/bootstrap.min.css" type="text/css">
+</head>
+<body>
+<header class="container mt-3">
+    <nav>
+        <div class="row">
+            <div class="col-2 float-left">
+                <a href="/" class="mainPage">Main page</a>
+            </div>
+
+            <div class="col-9">
+                <% if(sessionUserId) { %>
+                <img class="float-right ml-3" src="/avatar/avatar-<%= sessionUserId %>.jpg" height="50px">
+                <% } %>
+                <a href="/profile" class="float-right sessionName"><%= sessionName %></a>
+            </div>
+            <div class="col-1">
+                <% if(sessionName) { %>
+                <a href="/logout" class="float-right logout">Log out</a>
+                <% } %>
+            </div>
+        </div>
+    </nav>
+
+    <h1 class='text-center'>To Do... .</h1>
+</header>
+
+<p style="background-color: lightyellow" class="container"><%= msg %></p>
+
+<div class="container">
+    <%- body %>
+</div>
+
+<footer class="container mt-5">@copyright 2019</footer>
+</body>
+</html>

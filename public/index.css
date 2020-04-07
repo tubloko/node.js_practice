@@ -1,0 +1,19 @@
+.mainPage, .logout, .sessionName {
+    font-size: 18px;
+}
+.done {
+    text-decoration: line-through;
+}
+form {
+    display: inline;
+}
+.lists {
+    font-size: 20px;
+}
+.tasks {
+    font-size: 20px;
+}
+.userShared {
+    font-size: 25px;
+}
+

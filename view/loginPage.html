@@ -1,0 +1,14 @@
+<form method="post" class="row">
+  <div class="col-4">
+    <div class="form-group">
+      <label for="name">Login</label>
+      <input name="name" class="form-control" id="name" placeholder="login" value="<%= name %>" required>
+    </div>
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input name="password" type="password" class="form-control" id="password" placeholder="Password" required>
+    </div>
+    <input type="submit" value="Register" formaction="/register" class="btn btn-warning">
+    <input type="submit" value="Login" formaction="/login" class="btn btn-success">
+  </div>
+</form>

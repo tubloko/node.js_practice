@@ -1,0 +1,114 @@
+<h2 class="text-center col-8"><%= list.name %></h2>
+
+<div class="row mt-3 mb-3">
+    <form method="post" class="input-group input-group-lg col-8">
+        <input type="hidden" name="listId" value="<%= list.listId %>">
+        <input type="text" placeholder="write your task here" required name="task" class="form-control">
+        <div class="input-group-prepend">
+            <input class="btn btn-secondary" type="submit" value="Add Task">
+        </div>
+    </form>
+</div>
+
+<div class="row mt-4 mb-3">
+    <div class="col-8">
+        <ul class="list-group list-group-flush">
+            <% tasks.forEach(task => { %>
+            <li class="list-group-item-action list-group-item">
+                <form action="/check-task" method="post">
+                    <input value="<%= task.taskId  %>" name="taskId" type="hidden">
+                    <input type="checkbox" name="checked" value="true"
+                    <%= task.doneAt ? 'checked' : '' %> onChange="this.form.submit()">
+                </form>
+                <span class="<%= task.doneAt ? 'done' : '' %> tasks">
+                <%=task.description %>
+            </span>
+                <form action="/delete-task" method="post">
+                    <input value="<%= task.taskId  %>" name="taskId" type="hidden">
+                    <input value="<%= list.listId  %>" name="listId" type="hidden">
+                    <input type="submit" class="btn btn-outline-danger float-right" value="X">
+                </form>
+                <% if(!task.doneAt) {%>
+                <form action="/moveUp" method="post">
+                    <input type="hidden" name="targetId" value="<%= task.taskId %>">
+                    <input type="hidden" name="listId" value="<%= list.listId %>">
+                    <input type="submit" class="btn btn-outline-success float-right mr-2" value="^">
+                </form>
+                <% }%>
+                <span>
+<%
+      const createdAt = new Date(task.createdAt);
+      const now = new Date();
+      let formatPattern = 'hh:mm';
+      if(
+      createdAt.getFullYear() !== now.getFullYear() ||
+      createdAt.getMonth() !== now.getMonth() ||
+      createdAt.getDate() !== now.getDate()
+      ){
+       formatPattern += ' MM-DD-YYYY';
+      }
+      %>
+      <%= moment(task.createdAt).format(formatPattern) %>
+    </span>
+                <% if(task.doneAt) { %>
+                <span class="float-right mr-2" style="color: darkred">
+        <%= moment(task.doneAt).format(formatPattern) %>
+    </span>
+                <% } %>
+            </li>
+            <% }); %>
+        </ul>
+    </div>
+
+
+    <div class="col-4">
+        <form action="/share-list" method="post">
+            <fieldset>
+                <label class="input-group">Share to:
+                    <input class="form-control" list="usersList" name="userName" id="userName" oninput="onchangeName()">
+                    <input type="hidden" name="listId" value="<%= list.listId %>">
+                    <input type="submit" class="btn btn-dark" value="Share">
+                    <datalist id="usersList">
+                        <% users.filter(({userId}) => !userIds.includes(userId)).forEach(user => { %>
+                        <option value="<%= user.name %>"></option>
+                        <% }) %>
+                    </datalist>
+                </label>
+            </fieldset>
+        </form>
+
+        <br>
+        <div style="border: 3px solid black">
+            Shared to:
+            <ul class="list-group">
+                <% userIds.forEach((userId) => {%>
+                <li class="list-group-item">
+                    <span class="userShared"><%= userIdToUser[userId].name %></span>
+                    <form method="post" action="/unshare-list">
+                        <input type="hidden" name="userId" value="<%= userId %>">
+                        <input type="hidden" name="listId" value="<%= list.listId %>">
+                        <input type="submit" class="btn btn-dark float-right" value="Unshare">
+                    </form>
+                </li>
+                <%}) %>
+            </ul>
+        </div>
+    </div>
+
+</div>
+
+<script>
+  async function onchangeName(event) {
+    console.log(event);
+    const name = document.getElementById('userName').value;
+    const { names } = await fetch(`/api/suggest-user-name?name=${name}`)
+      .then(res => res.json());
+    const userslist = document.getElementById('usersList');
+    userslist.innerHTML = '';
+    names.forEach((name) => {
+      const option = document.createElement('option');
+      option.value = name;
+      userslist.append(option);
+    });
+  }
+</script>

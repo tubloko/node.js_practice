@@ -1,0 +1,23 @@
+<h2 class="text-center col-6">Main</h2>
+
+<div class="row mt-3 mb-3">
+    <ul class="list-group col-6">
+        <% [...sharedLists, ...lists].forEach(list => { %>
+        <li class="list-group-item">
+            <a href="tasks-list?listId=<%= list.listId %>" class="lists"> <%= list.name %></a>
+            <form action="/delete-list" method="post">
+                <input value="<%= list.listId  %>" name="listId" type="hidden">
+                <input type="submit" value="X" class="btn btn-outline-danger float-right">
+            </form>
+        </li>
+        <% }); %>
+    </ul>
+</div>
+<div class="row">
+    <form class="input-group col-6" method="post" action="/add-list">
+        <input type="text" name="name" class="form-control" required placeholder="list name">
+        <div class="input-group-prepend">
+            <input class="btn btn-secondary" type="submit" value="Add new list">
+        </div>
+    </form>
+</div>
